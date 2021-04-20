@@ -11,18 +11,12 @@ data "aws_iam_policy_document" "LambdaEdgeAssumeRole" {
 
 data "aws_iam_policy_document" "redirect_lambda_logging" {
   statement {
-    actions = ["logs:CreateLogStream", "logs:CreateLogGroup"]
-    resources = [
-      "arn:aws:logs:*:822757335928:log-group:*us-east-1.redirect*",
-      "arn:aws:logs:*:822757335928:log-group:/aws/lambda/us-east-1.redirect:*",
-    ]
+    actions   = ["logs:CreateLogStream", "logs:CreateLogGroup"]
+    resources = ["arn:aws:logs:*:822757335928:log-group:/aws/lambda/us-east-1.redirect:*"]
   }
   statement {
-    actions = ["logs:PutLogEvents"]
-    resources = [
-      "arn:aws:logs:*:822757335928:log-group:*us-east-1.redirect*:log-stream:*",
-      "arn:aws:logs:*:822757335928:log-group:/aws/lambda/us-east-1.redirect:*",
-    ]
+    actions   = ["logs:PutLogEvents"]
+    resources = ["arn:aws:logs:*:822757335928:log-group:/aws/lambda/us-east-1.redirect:*"]
   }
 }
 
