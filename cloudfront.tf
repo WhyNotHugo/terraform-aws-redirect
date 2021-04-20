@@ -17,7 +17,7 @@ resource "aws_cloudfront_distribution" "redirect_domains" {
   is_ipv6_enabled = true
   comment         = "Redirect ${each.key}"
 
-  aliases = [each.key, "*.${each.key}"]
+  aliases = [each.key]
 
   # This is not actually used, but MUST be defined:
   origin {
