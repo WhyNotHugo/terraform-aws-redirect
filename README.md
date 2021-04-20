@@ -22,7 +22,9 @@ the right order).
 
 Originally written on Terraform 0.14. Currently used with Terraform 0.15.
 
-##Usage
+## Usage
+
+Full example:
 
 ```hcl
 module "redirect" {
@@ -30,6 +32,15 @@ module "redirect" {
 
   domains       = ["example.com", "anotherexample.com"]
   alias_domains = {"example.com.ar": "example.ar"}
+}
+```
+
+No aliases:
+```hcl
+module "redirect" {
+  source = "terraform-awsredirect"
+
+  domains       = ["example.com", "anotherexample.com"]
 }
 ```
 
