@@ -1,4 +1,6 @@
 # terraform-aws-redirect
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FWhyNotHugo%2Fterraform-aws-redirect.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FWhyNotHugo%2Fterraform-aws-redirect?ref=badge_shield)
+
 
 Sets up redirections using AWS CloudFront and Lambda@Edge.
 
@@ -53,3 +55,6 @@ related resources MUST exist in that region.
 
 Copyright (c) 2021, Hugo Osvaldo Barrera <hugo@barrera.io>  
 This project is licensed under the ISC licence. See LICENCE for details.
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FWhyNotHugo%2Fterraform-aws-redirect.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FWhyNotHugo%2Fterraform-aws-redirect?ref=badge_large)
