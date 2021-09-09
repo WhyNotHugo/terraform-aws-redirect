@@ -64,7 +64,7 @@ resource "aws_cloudfront_distribution" "redirect_domains" {
   viewer_certificate {
     minimum_protocol_version = "TLSv1.2_2019"
     ssl_support_method       = "sni-only"
-    acm_certificate_arn      = module.redirect_certs[each.key].this_acm_certificate_arn
+    acm_certificate_arn      = module.redirect_certs[each.key].acm_certificate_arn
   }
 }
 
@@ -122,6 +122,6 @@ resource "aws_cloudfront_distribution" "alias_domains" {
   viewer_certificate {
     minimum_protocol_version = "TLSv1.2_2019"
     ssl_support_method       = "sni-only"
-    acm_certificate_arn      = module.alias_certs[each.key].this_acm_certificate_arn
+    acm_certificate_arn      = module.alias_certs[each.key].acm_certificate_arn
   }
 }
