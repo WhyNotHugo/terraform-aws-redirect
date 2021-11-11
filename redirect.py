@@ -82,8 +82,6 @@ def handle(event, context):
 
     `alias`: then we're handling an alias domain redirection.  These are,
     specifically, redirections from `www.example.com.ar` to `www.example.com`.
-
-    Always includes HSTS headers (super important for the bare domain!).
     """
 
     # https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/lambda-event-structure.html#example-origin-request
@@ -111,13 +109,6 @@ def handle(event, context):
 
     response = {
         "headers": {
-            # Always enable HSTS:
-            "strict-transport-security": [
-                {
-                    "key": "Strict-Transport-Security",
-                    "value": "max-age=63072000; includeSubDomains; preload",
-                },
-            ],
             # Redirection:
             "location": [
                 {

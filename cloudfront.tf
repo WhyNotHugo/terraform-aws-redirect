@@ -1,6 +1,9 @@
 data "aws_cloudfront_cache_policy" "caching_optimised" {
-  # id = "658327ea-f89d-4fab-a63d-7e88639e58f6"
   name = "Managed-CachingOptimized"
+}
+
+data "aws_cloudfront_response_headers_policy" "security_headers" {
+  name = "Managed-SecurityHeadersPolicy"
 }
 
 resource "aws_cloudfront_origin_request_policy" "all_requests_equal" {
@@ -10,6 +13,7 @@ resource "aws_cloudfront_origin_request_policy" "all_requests_equal" {
   query_strings_config { query_string_behavior = "none" }
 }
 
+# TODO: use a cloudfront funciton instead of lambda
 resource "aws_cloudfront_distribution" "redirect_domains" {
   for_each = var.domains
 
@@ -48,6 +52,7 @@ resource "aws_cloudfront_distribution" "redirect_domains" {
     target_origin_id         = each.key
     viewer_protocol_policy   = "redirect-to-https"
     origin_request_policy_id = aws_cloudfront_origin_request_policy.all_requests_equal.id
+    response_headers_policy_id = data.aws_cloudfront_response_headers_policy.security_headers.id
 
     lambda_function_association {
       event_type = "origin-request"
@@ -106,6 +111,7 @@ resource "aws_cloudfront_distribution" "alias_domains" {
     target_origin_id         = each.key
     viewer_protocol_policy   = "redirect-to-https"
     origin_request_policy_id = aws_cloudfront_origin_request_policy.all_requests_equal.id
+    response_headers_policy_id = data.aws_cloudfront_response_headers_policy.security_headers.id
 
     lambda_function_association {
       event_type = "origin-request"
