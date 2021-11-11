@@ -4,6 +4,12 @@ data "aws_route53_zone" "domains" {
   name = each.key
 }
 
+data "aws_route53_zone" "alias_domains" {
+  for_each = var.alias_domains
+
+  name = each.key
+}
+
 resource "aws_route53_record" "redirect_a" {
   for_each = var.domains
 
@@ -35,7 +41,7 @@ resource "aws_route53_record" "redirect_aaaa" {
 resource "aws_route53_record" "alias_a" {
   for_each = var.alias_domains
 
-  zone_id = data.aws_route53_zone.domains[each.key].id
+  zone_id = data.aws_route53_zone.alias_domains[each.key].id
   name    = "www.${each.key}"
   type    = "A"
 
@@ -49,7 +55,7 @@ resource "aws_route53_record" "alias_a" {
 resource "aws_route53_record" "alias_aaaa" {
   for_each = var.alias_domains
 
-  zone_id = data.aws_route53_zone.domains[each.key].id
+  zone_id = data.aws_route53_zone.alias_domains[each.key].id
   name    = "www.${each.key}"
   type    = "AAAA"
 
