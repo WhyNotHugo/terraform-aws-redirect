@@ -6,13 +6,6 @@ data "aws_cloudfront_response_headers_policy" "security_headers" {
   name = "Managed-SecurityHeadersPolicy"
 }
 
-resource "aws_cloudfront_origin_request_policy" "all_requests_equal" {
-  name = "AllRequestsEqual"
-  cookies_config { cookie_behavior = "none" }
-  headers_config { header_behavior = "none" }
-  query_strings_config { query_string_behavior = "none" }
-}
-
 resource "aws_cloudfront_function" "redirect" {
   for_each = var.domains
 
@@ -53,7 +46,6 @@ resource "aws_cloudfront_distribution" "redirect_domains" {
     compress                   = true
     target_origin_id           = each.key
     viewer_protocol_policy     = "redirect-to-https"
-    origin_request_policy_id   = aws_cloudfront_origin_request_policy.all_requests_equal.id
     response_headers_policy_id = data.aws_cloudfront_response_headers_policy.security_headers.id
 
     function_association {
@@ -115,7 +107,6 @@ resource "aws_cloudfront_distribution" "alias_domains" {
     compress                   = true
     target_origin_id           = each.key
     viewer_protocol_policy     = "redirect-to-https"
-    origin_request_policy_id   = aws_cloudfront_origin_request_policy.all_requests_equal.id
     response_headers_policy_id = data.aws_cloudfront_response_headers_policy.security_headers.id
 
     function_association {
