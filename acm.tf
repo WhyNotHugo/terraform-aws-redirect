@@ -3,9 +3,9 @@ module "redirect_certs" {
 
   source = "terraform-aws-modules/acm/aws"
 
-  domain_name               = each.key
-  zone_id                   = data.aws_route53_zone.domains[each.key].zone_id
-  wait_for_validation       = true
+  domain_name         = each.key
+  zone_id             = data.aws_route53_zone.domains[each.key].zone_id
+  wait_for_validation = true
 }
 
 module "alias_certs" {
@@ -13,7 +13,7 @@ module "alias_certs" {
 
   source = "terraform-aws-modules/acm/aws"
 
-  domain_name               = "www.${each.key}"
-  zone_id                   = data.aws_route53_zone.domains[each.key].zone_id
-  wait_for_validation       = true
+  domain_name         = "www.${each.key}"
+  zone_id             = data.aws_route53_zone.domains[each.key].zone_id
+  wait_for_validation = true
 }
