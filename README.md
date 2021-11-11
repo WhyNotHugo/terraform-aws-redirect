@@ -1,13 +1,12 @@
 # terraform-aws-redirect
 
-Sets up redirections using AWS CloudFront and Lambda@Edge.
+Sets up redirections using AWS CloudFront.
 
 Redirects bare domains to www domains, e.g.:
 
     example.com -> www.example.com
 
-It also makes sure HSTS is on (non-trivial when using CloudFront or similar
-balancers).
+It also makes sure HSTS is on.
 
 Can also set up alias domains, e.g.:
 

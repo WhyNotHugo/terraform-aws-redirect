@@ -13,7 +13,17 @@ resource "aws_cloudfront_origin_request_policy" "all_requests_equal" {
   query_strings_config { query_string_behavior = "none" }
 }
 
-# TODO: use a cloudfront funciton instead of lambda
+resource "aws_cloudfront_function" "redirect" {
+  for_each = var.domains
+
+  name    = "redirect-${replace(each.key, ".", "__")}"
+  runtime = "cloudfront-js-1.0"
+  publish = true
+  code = templatefile("${path.module}/function.js", {
+    new_domain = "www.${each.value}"
+  })
+}
+
 resource "aws_cloudfront_distribution" "redirect_domains" {
   for_each = var.domains
 
@@ -25,16 +35,8 @@ resource "aws_cloudfront_distribution" "redirect_domains" {
 
   # This is not actually used, but MUST be defined:
   origin {
-    # Set origin to the actual destination domain.
-    # This is because the CloudFront->Lambda request will use this host
-    # in the request, and not the one specified by the end client.
     domain_name = each.key
     origin_id   = each.key
-
-    custom_header {
-      name  = "X-Redirect-Type"
-      value = "redirect"
-    }
 
     custom_origin_config {
       http_port              = 80
@@ -45,18 +47,18 @@ resource "aws_cloudfront_distribution" "redirect_domains" {
   }
 
   default_cache_behavior {
-    allowed_methods          = ["GET", "HEAD"]
-    cached_methods           = ["GET", "HEAD"]
-    cache_policy_id          = data.aws_cloudfront_cache_policy.caching_optimised.id
-    compress                 = true
-    target_origin_id         = each.key
-    viewer_protocol_policy   = "redirect-to-https"
-    origin_request_policy_id = aws_cloudfront_origin_request_policy.all_requests_equal.id
+    allowed_methods            = ["GET", "HEAD"]
+    cached_methods             = ["GET", "HEAD"]
+    cache_policy_id            = data.aws_cloudfront_cache_policy.caching_optimised.id
+    compress                   = true
+    target_origin_id           = each.key
+    viewer_protocol_policy     = "redirect-to-https"
+    origin_request_policy_id   = aws_cloudfront_origin_request_policy.all_requests_equal.id
     response_headers_policy_id = data.aws_cloudfront_response_headers_policy.security_headers.id
 
-    lambda_function_association {
-      event_type = "origin-request"
-      lambda_arn = aws_lambda_function.redirect.qualified_arn
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.redirect[each.key].arn
     }
   }
 
@@ -73,6 +75,17 @@ resource "aws_cloudfront_distribution" "redirect_domains" {
   }
 }
 
+resource "aws_cloudfront_function" "alias" {
+  for_each = var.alias_domains
+
+  name    = "alias-${replace(each.key, ".", "__")}"
+  runtime = "cloudfront-js-1.0"
+  publish = true
+  code = templatefile("${path.module}/function.js", {
+    new_domain = each.value
+  })
+}
+
 resource "aws_cloudfront_distribution" "alias_domains" {
   for_each = var.alias_domains
 
@@ -84,16 +97,8 @@ resource "aws_cloudfront_distribution" "alias_domains" {
 
   # This is not actually used, but MUST be defined:
   origin {
-    # Set origin to the actual destination domain.
-    # This is because the CloudFront->Lambda request will use this host
-    # in the request, and not the one specified by the end client.
     domain_name = each.key
     origin_id   = each.key
-
-    custom_header {
-      name  = "X-Redirect-Type"
-      value = "alias"
-    }
 
     custom_origin_config {
       http_port              = 80
@@ -104,18 +109,18 @@ resource "aws_cloudfront_distribution" "alias_domains" {
   }
 
   default_cache_behavior {
-    allowed_methods          = ["GET", "HEAD"]
-    cached_methods           = ["GET", "HEAD"]
-    cache_policy_id          = data.aws_cloudfront_cache_policy.caching_optimised.id
-    compress                 = true
-    target_origin_id         = each.key
-    viewer_protocol_policy   = "redirect-to-https"
-    origin_request_policy_id = aws_cloudfront_origin_request_policy.all_requests_equal.id
+    allowed_methods            = ["GET", "HEAD"]
+    cached_methods             = ["GET", "HEAD"]
+    cache_policy_id            = data.aws_cloudfront_cache_policy.caching_optimised.id
+    compress                   = true
+    target_origin_id           = each.key
+    viewer_protocol_policy     = "redirect-to-https"
+    origin_request_policy_id   = aws_cloudfront_origin_request_policy.all_requests_equal.id
     response_headers_policy_id = data.aws_cloudfront_response_headers_policy.security_headers.id
 
-    lambda_function_association {
-      event_type = "origin-request"
-      lambda_arn = aws_lambda_function.redirect.qualified_arn
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.alias[each.key].arn
     }
   }
 
