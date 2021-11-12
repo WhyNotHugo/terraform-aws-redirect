@@ -1,11 +1,14 @@
-variable "domains" {
-  description = "Domains for which we handle basic redirection."
-  type        = set(string)
-  default     = []
+variable "from" {
+  description = "The source domain from which we're redirecting."
+  type        = string
 }
 
-variable "alias_domains" {
-  description = "Domains which redirect to another."
-  type        = map(string)
-  default     = {}
+variable "to" {
+  description = "The destination domain to which we're redirecting."
+  type        = string
+}
+
+variable "zone_id" {
+  description = "The zone_id for the origin domain."
+  type        = string
 }
