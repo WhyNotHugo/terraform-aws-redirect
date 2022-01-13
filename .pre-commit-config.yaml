@@ -1,3 +1,6 @@
+ci:
+  skip:
+    - terraform_fmt
 repos:
 - repo: https://github.com/antonbabenko/pre-commit-terraform
   rev: v1.56.0
