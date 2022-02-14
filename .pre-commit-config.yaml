@@ -3,6 +3,6 @@ ci:
     - terraform_fmt
 repos:
 - repo: https://github.com/antonbabenko/pre-commit-terraform
-  rev: v1.62.3
+  rev: v1.64.0
   hooks:
     - id: terraform_fmt
